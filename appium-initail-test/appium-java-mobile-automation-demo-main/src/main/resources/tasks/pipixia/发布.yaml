@@ -1,0 +1,58 @@
+---
+-
+  app_name: com.sup.android.superb
+  activity_name: com.sup.android.base.MainActivity
+  element_info:  //android.widget.TextView[@resource-id="com.sup.android.superb:id/indicator_title" and @text="我的"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:  //android.widget.TextView[@resource-id="com.sup.android.superb:id/czb"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:  //android.widget.TextView[@resource-id="com.sup.android.superb:id/dn"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:  //android.widget.EditText[@resource-id="com.sup.android.superb:id/br"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:   //android.widget.EditText[@resource-id="com.sup.android.superb:id/br"]
+  find_type: XPATH
+  operate_type: INPUT
+  key: "15897663682"
+-
+  element_info: //android.widget.EditText[@resource-id="com.sup.android.superb:id/bq"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:  //android.widget.EditText[@resource-id="com.sup.android.superb:id/bq"]
+  find_type: XPATH
+  operate_type: INPUT
+  key: 1234abcd
+-
+  element_info: //android.widget.ImageView[@resource-id="com.sup.android.superb:id/bf"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/dm"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info: //android.widget.ImageView[@resource-id="com.sup.android.superb:id/ckp"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/us"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info:  //android.widget.EditText[@resource-id="com.sup.android.superb:id/an6"]
+  find_type: XPATH
+  operate_type: INPUT
+  key: "皮皮虾皮皮虾皮皮虾皮皮虾"
+-
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/d05"]
+  find_type: XPATH
+  operate_type: CLICK

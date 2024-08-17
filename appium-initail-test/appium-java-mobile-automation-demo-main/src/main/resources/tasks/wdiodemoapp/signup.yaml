@@ -1,0 +1,30 @@
+---
+-
+  app_name: com.wdiodemoapp
+  activity_name: .MainActivity
+  element_info: Login
+  find_type: DESC
+  operate_type: CLICK
+-
+  element_info: //android.widget.TextView[@text="Sign up"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info: input-email
+  find_type: DESC
+  operate_type: INPUT
+  key: 123@qq.com
+-
+  element_info: input-password
+  find_type: DESC
+  operate_type: INPUT
+  key: pwd123456
+-
+  element_info: input-repeat-password
+  find_type: DESC
+  operate_type: INPUT
+  key: pwd123456
+-
+  element_info: //android.view.ViewGroup[@content-desc="button-SIGN UP"]/android.view.ViewGroup
+  find_type: XPATH
+  operate_type: CLICK

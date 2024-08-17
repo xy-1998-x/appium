@@ -1,0 +1,11 @@
+---
+-
+  app_name: com.sup.android.superb
+  activity_name: com.sup.android.base.MainActivity
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/indicator_title" and @text="皮友圈"]
+  find_type: XPATH
+  operate_type: CLICK
+-
+  element_info: //android.widget.TextView[@text="分类"]
+  find_type: XPATH
+  operate_type: CLICK

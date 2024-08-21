@@ -21,15 +21,15 @@ public class AndroidDriverServiceImpl implements MobileDriverService {
     @Override
     public void spinUpDriver(AppiumDriverLocalService appiumService) {
         UiAutomator2Options options = new UiAutomator2Options()
-                .setUdid(DriverConstants.ANDROID_DEVICE_NAME)
+                .setUdid(DriverConstants.ANDROID_DEVICE_NAME)   //不设置就是默认
                 .setAppPackage(appInfo.getAndroidAppPackage())
-//                .setApp(new File(appInfo.getAndroidAppFilePath()).getAbsolutePath())
                 .setAppActivity(appInfo.getAndroidAppActivity())
+
                 .setNoReset(Boolean.parseBoolean(DriverConstants.ANDROID_NO_RESET))
                 .setFullReset(Boolean.parseBoolean(DriverConstants.ANDROID_FULL_RESET))
                 .autoGrantPermissions();
 
-        androidDriver = new AndroidDriver(appiumService.getUrl(), options);
+        androidDriver = new AndroidDriver(appiumService.getUrl(), options); //.
         androidDriver.manage().timeouts().implicitlyWait(DriverConstants.APPIUM_DRIVER_TIMEOUT);
     }
 

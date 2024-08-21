@@ -2,7 +2,12 @@ package com.appium.example.constant;
 
 public enum OperateType {
     CLICK("click"),
-    INPUT("input");
+    INPUT("input"),
+    SCROLLDOWN("scrolldown"),
+    SCROLLRIGHT("scrollright"),
+    SCROLLTOTEXT("scrolltotext"),
+    FIND("find");
+
 
     private String name;
 

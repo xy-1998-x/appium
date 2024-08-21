@@ -1,9 +1,10 @@
 ---
 -
-  app_name: com.sup.android.superb
-  activity_name: com.sup.android.base.MainActivity
+  app_name: com.tencent.mobileqq
+  activity_name: com.tencent.mobileqq.activity.SplashActivity
   element_info:  //
   find_type: XPATH
-  operate_type: SCROLLDOWN
-  num_info: "10"
+  operate_type: SCROLLTOTEXT
+
+
 

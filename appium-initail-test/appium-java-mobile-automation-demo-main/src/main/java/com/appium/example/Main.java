@@ -1,5 +1,5 @@
 /**
- * @authors zhuyin
+ * @authors xiny
  */
 
 package com.appium.example;
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.appium.example.util.driver.MobileDriverHolder.setDriver;
+//import static com.sun.tools.javac.jvm.PoolConstant.LoadableConstant.Int;
 
 public class Main {
     private final Logger logger = LogManager.getLogger();
@@ -63,8 +64,9 @@ public class Main {
                         if (ele.get("activity_name") != null) {
                             step.setActivityName(ele.get("activity_name"));
                         }
+                        step.setNumsinfo((ele.get("num_info")));
                         step.setElementInfo(ele.get("element_info"));
-                        step.setFindType(FindType.valueOf(ele.get("find_type")));
+                        step.setFindType(FindType.valueOf(ele.get("find_type")));// get一个find_type的值 并使用valueOf将其转化为FindType的枚举类型
                         OperateType operateType = OperateType.valueOf(ele.get("operate_type"));
                         step.setOperateType(operateType);
                         if (operateType.equals(OperateType.INPUT)) {
@@ -122,7 +124,7 @@ public class Main {
         return driverService;
     }
 
-    public void execTask(Task task) {
+    public void execTask(Task task) throws IOException {
         BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
         // appium定位元素的几种方式：https://blog.csdn.net/lovedingd/article/details/111058898
         // https://cloud.tencent.com/developer/article/1816977
@@ -141,11 +143,42 @@ public class Main {
                 }
             }
             switch (step.getOperateType()) {
+                case SCROLLTOTEXT -> {
+                    try {
+                        baseScreen.findtext("杨苗苗");
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 case CLICK -> baseScreen.tap(elementInfo);
                 case INPUT -> baseScreen.inputText(elementInfo, step.getInputText());
+                case SCROLLDOWN -> {
+                    try {
+                        baseScreen.scrolldown(step.getNumsinfo());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case SCROLLRIGHT -> {
+                    try {
+                        baseScreen.scrollright(step.getNumsinfo());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 default -> System.out.println("请检查操作类型，当前操作类型包括 '点击/文本输入'");
             }
         });
+
+//        try {
+//            // 这里不会有异常抛出，但只是为了和 finally 配合使用
+//        } catch (Exception e) {
+//            // 这里不会执行到
+//        } finally {
+//            baseScreen.screenshot();
+//
+//        }
+
     }
 
     public static void main(String[] args) throws Exception {
@@ -157,10 +190,30 @@ public class Main {
             taskByApp.forEach(task -> {
                 Step step = task.getSteps().get(0);
                 MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
-                main.execTask(task);
+                try {
+                    main.execTask(task);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                finally {
+                    BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());;
+                    try {
+                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 main.afterExec(mobileDriverService);
             });
         });
+
+
+
     }
 
 

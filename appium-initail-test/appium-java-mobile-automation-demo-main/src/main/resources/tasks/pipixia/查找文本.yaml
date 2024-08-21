@@ -1,0 +1,9 @@
+---
+-
+  app_name: com.sup.android.superb
+  activity_name: com.sup.android.base.MainActivity
+  element_info:  //
+  find_type: XPATH
+  operate_type: SCROLLDOWN
+  num_info: "10"
+

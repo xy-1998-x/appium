@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumBy;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -64,6 +65,15 @@ public class BaseScreen {
 
     public void scrollAndInputText(String elementText, String text) {
         scrollToElement(elementText).sendKeys(text);
+    }
+
+    public void doubleclick(By by){
+        waitUntilElementVisible(by);
+        RemoteWebElement element = (RemoteWebElement) driver.findElement(by); //通过这个定位到的元素来get他的id
+//        RemoteWebElement element = (RemoteWebElement) driver.findElement(By.xpath("//android.widget.FrameLayout[@resource-id=\"com.sup.android.superb:id/action_bar_root\"]/android.widget.FrameLayout"));
+        ((JavascriptExecutor) driver).executeScript("mobile: doubleClickGesture", ImmutableMap.of(
+                "elementId", element.getId()
+        ));
     }
 
     //上滑

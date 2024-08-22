@@ -1,0 +1,7 @@
+---
+-
+  app_name: com.sup.android.superb
+  activity_name: com.sup.android.base.MainActivity
+  element_info:  //android.widget.FrameLayout[@resource-id="com.sup.android.superb:id/action_bar_root"]/android.widget.FrameLayout
+  find_type: XPATH
+  operate_type: DOUBLECLICK

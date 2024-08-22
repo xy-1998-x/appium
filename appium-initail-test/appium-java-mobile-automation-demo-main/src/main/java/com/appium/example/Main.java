@@ -133,6 +133,7 @@ public class Main {
             By elementInfo = null;
             String info = step.getElementInfo();
             switch (step.getFindType()) {
+                //elementInfo是当前页面上第一个匹配的元素WebElement类型
                 case ID -> elementInfo = AppiumBy.id(info);
                 case CLASSNAME -> elementInfo = AppiumBy.className(info);
                 case DESC -> elementInfo = AppiumBy.accessibilityId(info);
@@ -143,13 +144,15 @@ public class Main {
                 }
             }
             switch (step.getOperateType()) {
+                ///*********
                 case SCROLLTOTEXT -> {
                     try {
-                        baseScreen.findtext("杨苗苗");
+                        baseScreen.findtext("");
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
+                case DOUBLECLICK -> baseScreen.doubleclick(elementInfo);
                 case CLICK -> baseScreen.tap(elementInfo);
                 case INPUT -> baseScreen.inputText(elementInfo, step.getInputText());
                 case SCROLLDOWN -> {
@@ -183,6 +186,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Main main = new Main();
+        String yourpath="C:\\Users\\86158\\Desktop\\";
         AllTask allTask = main.generateTask();
         List<String> appList = allTask.getAppList();
         appList.forEach(app -> {
@@ -198,7 +202,8 @@ public class Main {
                 finally {
                     BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());;
                     try {
-                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
+                        baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
+//                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -208,6 +213,7 @@ public class Main {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+
                 main.afterExec(mobileDriverService);
             });
         });

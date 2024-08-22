@@ -6,6 +6,7 @@ public enum OperateType {
     SCROLLDOWN("scrolldown"),
     SCROLLRIGHT("scrollright"),
     SCROLLTOTEXT("scrolltotext"),
+    DOUBLECLICK("doubleclick"),
     FIND("find");
 
 

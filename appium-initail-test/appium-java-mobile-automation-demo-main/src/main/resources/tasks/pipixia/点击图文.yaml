@@ -1,0 +1,10 @@
+---
+-
+  app_name: com.sup.android.superb
+  activity_name: com.sup.android.base.MainActivity
+  element_info:  //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="图文"]
+  find_type: XPATH
+  operate_type: CLICK
+
+
+

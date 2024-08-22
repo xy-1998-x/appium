@@ -5,3 +5,7 @@
   element_info:  //android.widget.FrameLayout[@resource-id="com.sup.android.superb:id/action_bar_root"]/android.widget.FrameLayout
   find_type: XPATH
   operate_type: DOUBLECLICK
+-
+  element_info:  //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="关注"]
+  find_type: XPATH
+  operate_type: CLICK

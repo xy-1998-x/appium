@@ -13,5 +13,6 @@ public class Step {
     private OperateType operateType;
     private String inputText;
     private String numsinfo;
+    private String taskslist;
     private int index;
 }

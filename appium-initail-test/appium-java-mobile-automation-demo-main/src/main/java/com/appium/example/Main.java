@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
@@ -38,7 +39,7 @@ import static com.appium.example.util.driver.MobileDriverHolder.setDriver;
 //import static com.sun.tools.javac.jvm.PoolConstant.LoadableConstant.Int;
 
 public class Main {
-    private final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private void generateTask(Path appNamePath, AllTask allTask) {
         String appName = appNamePath.getFileName().toString();
@@ -61,6 +62,19 @@ public class Main {
                         if (ele.get("app_name") != null) {
                             step.setAppName(ele.get("app_name"));
                         }
+
+                        //解析yaml文件并保存为对应的字符串数组
+//                        if (ele.get("taskslist") != null) {
+//                            step.setTaskslist(ele.get("taskslist"));
+//                        }
+//                        String str = step.getTaskslist();
+//                        String[] parts = str.split("，");
+//                        String part1 = parts[0];
+//                        String part2 = parts[1];
+//                        String[] subParts1 = part1.split("\\+");    //得到了字符串数组1
+//                        String[] subParts2 = part2.split("\\+");    //得到了字符串数组2
+
+
                         if (ele.get("activity_name") != null) {
                             step.setActivityName(ele.get("activity_name"));
                         }
@@ -190,32 +204,51 @@ public class Main {
         AllTask allTask = main.generateTask();
         List<String> appList = allTask.getAppList();
         appList.forEach(app -> {
+
+
             List<Task> taskByApp = allTask.getTask(app);
             taskByApp.forEach(task -> {
-                Step step = task.getSteps().get(0);
-                MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
-                try {
-                    main.execTask(task);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                finally {
-                    BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());;
+
+//                if(task.getTaskName().equals("测试.yaml"))
+//                {
+//                    System.out.println("ok'");
+//                }
+//                if(task.getTaskName().equals( "测试.yaml")) { //为什么没有执行   因为这个taskByApp列表不是个字符串 app可以是因为app是一个字符串列表
+
+                String[] strArray = {"测试.yaml", "点击武汉.yaml"};
+
+                boolean found = Arrays.stream(strArray).anyMatch(str -> task.getTaskName().equals(str));
+                if (found) {
+                    Step step = task.getSteps().get(0);
+                    MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
                     try {
-                        baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
-//                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
+                        main.execTask(task);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
+                    } finally {
+                        BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
+                        ;
+                        try {
+                            baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
+//                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                main.afterExec(mobileDriverService);
+                    main.afterExec(mobileDriverService);
+
+               }   //if的
+
             });
+
+
+
         });
 
 

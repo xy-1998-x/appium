@@ -200,24 +200,57 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Main main = new Main();
+        Path taskpath = Path.of("C:\\Users\\86158\\Desktop\\test\\测试.yaml");
+
         String yourpath="C:\\Users\\86158\\Desktop\\";
+
         AllTask allTask = main.generateTask();
         List<String> appList = allTask.getAppList();
+        Step steplist = new Step();
+        try {
+            Yaml yaml = new Yaml();
+            InputStream inputStream = new FileInputStream(taskpath.toFile());
+            ArrayList<HashMap<String, String>> arrayList = yaml.loadAs(inputStream, ArrayList.class);
+            arrayList.forEach(ele -> {
+
+                if (ele.get("app_name") != null) {
+                    steplist.setAppName(ele.get("app_name"));
+                }
+
+                //解析yaml文件并保存为对应的字符串数组
+                if (ele.get("taskslist") != null) {
+                    steplist.setTaskslist(ele.get("taskslist"));
+                }
+
+            });
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        String appstr = steplist.getAppName();;
+
+        String taskstr = steplist.getTaskslist();
+        String[] parts = taskstr.split("，");
+        String part1 = parts[0];
+        String part2 = parts[1];
+        String[] subParts1 = part1.split("\\+");
+        String[] subParts2 = part2.split("\\+");
+        // 为 subParts1 的每个元素添加 ".yaml" 后缀
+        String[] updatedSubParts1 = new String[subParts1.length];
+        for (int i = 0; i < subParts1.length; i++) {
+            updatedSubParts1[i] = subParts1[i] + ".yaml";
+        }
+        String[] updatedSubParts2 = new String[subParts2.length];
+        for (int i = 0; i < subParts2.length; i++) {
+            updatedSubParts2[i] = subParts2[i] + ".yaml";
+        }
+
         appList.forEach(app -> {
-
-
             List<Task> taskByApp = allTask.getTask(app);
             taskByApp.forEach(task -> {
 
-//                if(task.getTaskName().equals("测试.yaml"))
-//                {
-//                    System.out.println("ok'");
-//                }
-//                if(task.getTaskName().equals( "测试.yaml")) { //为什么没有执行   因为这个taskByApp列表不是个字符串 app可以是因为app是一个字符串列表
+//                String[] strArray = {"点击双击.yaml", "点击武汉.yaml"};
 
-                String[] strArray = {"测试.yaml", "点击武汉.yaml"};
-
-                boolean found = Arrays.stream(strArray).anyMatch(str -> task.getTaskName().equals(str));
+                boolean found = Arrays.stream(updatedSubParts1).anyMatch(str -> task.getTaskName().equals(str));   //轮询判断啊
                 if (found) {
                     Step step = task.getSteps().get(0);
                     MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
@@ -252,6 +285,12 @@ public class Main {
         });
 
 
+
+//                if(task.getTaskName().equals("测试.yaml"))
+//                {
+//                    System.out.println("ok'");
+//                }
+//                if(task.getTaskName().equals( "测试.yaml")) { //为什么没有执行   因为这个taskByApp列表不是个字符串 app可以是因为app是一个字符串列表
 
     }
 

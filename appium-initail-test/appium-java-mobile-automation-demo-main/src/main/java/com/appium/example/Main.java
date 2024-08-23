@@ -248,10 +248,11 @@ public class Main {
             List<Task> taskByApp = allTask.getTask(app);
             taskByApp.forEach(task -> {
 
-//                String[] strArray = {"点击双击.yaml", "点击武汉.yaml"};
+//                boolean found = Arrays.stream(updatedSubParts1).anyMatch(str -> task.getTaskName().equals(str));   //轮询判断啊
+//                if (found) {
 
-                boolean found = Arrays.stream(updatedSubParts1).anyMatch(str -> task.getTaskName().equals(str));   //轮询判断啊
-                if (found) {
+                for (String str : updatedSubParts1) { //增强型for循环，foreach循环 遍历updatedSubParts1集合并一一赋值给str
+                    if(task.getTaskName().equals(str)){
                     Step step = task.getSteps().get(0);
                     MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
                     try {
@@ -276,6 +277,7 @@ public class Main {
 
                     main.afterExec(mobileDriverService);
 
+                }
                }   //if的
 
             });

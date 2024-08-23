@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.appium.example.util.driver.MobileDriverHolder.setDriver;
@@ -221,38 +222,63 @@ public class Main {
                 if (ele.get("taskslist") != null) {
                     steplist.setTaskslist(ele.get("taskslist"));
                 }
+//                if (ele.get("index") != null) {
+//                    steplist.setIndex(Integer.parseInt((ele.get("index"))));
+//                }
 
             });
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        String appstr = steplist.getAppName();;
+        String appstr = steplist.getAppName();
 
         String taskstr = steplist.getTaskslist();
-        String[] parts = taskstr.split("，");
-        String part1 = parts[0];
-        String part2 = parts[1];
-        String[] subParts1 = part1.split("\\+");
-        String[] subParts2 = part2.split("\\+");
-        // 为 subParts1 的每个元素添加 ".yaml" 后缀
-        String[] updatedSubParts1 = new String[subParts1.length];
-        for (int i = 0; i < subParts1.length; i++) {
-            updatedSubParts1[i] = subParts1[i] + ".yaml";
-        }
-        String[] updatedSubParts2 = new String[subParts2.length];
-        for (int i = 0; i < subParts2.length; i++) {
-            updatedSubParts2[i] = subParts2[i] + ".yaml";
-        }
+        String[] parts = taskstr.split(",");
+
+        for(int i=0;i < parts.length;i++) {
+            String part = parts[i];
+            String[] partlist = part.split("\\+");
+
+            //这是变成字符串数组
+//            String[]  newpartlist = new String[partlist.length];
+//            for (int j = 0; j < partlist.length; j++) {
+//                newpartlist[j] = partlist[j] + ".yaml";
+//             }
+
+            //把他变成一个链表  .map操作后的 Stream（其中的字符串都加上了.yaml后缀）收集到一个新的List<String>中。
+            List<String> newPartListAsList = Arrays.stream(partlist)
+                    .map(str -> str + ".yaml")
+                    .collect(Collectors.toList());
+
+            String b = newPartListAsList.get(0);
+
+//        String part1 = parts[0];
+//        String part2 = parts[1];
+//        String[] subParts1 = part1.split("\\+");
+//        String[] subParts2 = part2.split("\\+");
+//        // 为 subParts1 的每个元素添加 ".yaml" 后缀
+//        String[] updatedSubParts1 = new String[subParts1.length];
+//        for (int i = 0; i < subParts1.length; i++) {
+//            updatedSubParts1[i] = subParts1[i] + ".yaml";
+//        }
+//        String[] updatedSubParts2 = new String[subParts2.length];
+//        for (int i = 0; i < subParts2.length; i++) {
+//            updatedSubParts2[i] = subParts2[i] + ".yaml";
+//        }
+
 
         appList.forEach(app -> {
             List<Task> taskByApp = allTask.getTask(app);
-            taskByApp.forEach(task -> {
+            taskByApp.forEach(task -> { //这个地方固定了task是哪一个
 
 //                boolean found = Arrays.stream(updatedSubParts1).anyMatch(str -> task.getTaskName().equals(str));   //轮询判断啊
 //                if (found) {
 
-                for (String str : updatedSubParts1) { //增强型for循环，foreach循环 遍历updatedSubParts1集合并一一赋值给str
-                    if(task.getTaskName().equals(str)){
+//                for (String str : newpartlist) { //增强型for循环，foreach循环 遍历updatedSubParts1集合并一一赋值给str
+                for(int j=0;j<newPartListAsList.size();j++)
+                {
+                    if(task.getTaskName().equals(newPartListAsList.get(j))){
+                        //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
                     Step step = task.getSteps().get(0);
                     MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
                     try {
@@ -280,11 +306,15 @@ public class Main {
                 }
                }   //if的
 
+
             });
 
 
 
+
         });
+        }
+
 
 
 

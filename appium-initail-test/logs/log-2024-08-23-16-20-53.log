@@ -1,0 +1,4 @@
+2024-08-23 16:21:15.097 [main] WARN  com.appium.example.constant.CommonConstants - The Maven Profile is missing the platform configuration.
+2024-08-23 16:21:15.139 [main] WARN  com.appium.example.constant.CommonConstants - The default platform 'android' will be enabled for this run.
+2024-08-23 16:21:15.139 [main] WARN  com.appium.example.constant.CommonConstants - The Maven Profile is missing the environment configuration.
+2024-08-23 16:21:15.140 [main] WARN  com.appium.example.constant.CommonConstants - The default environment 'dev' will be enabled for this run.

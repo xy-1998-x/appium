@@ -3,6 +3,6 @@
   app_name: com.sup.android.superb
 #  taskslist: 登录+点击，登录+双击+登出
   activity_name: com.sup.android.base.MainActivity
-  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="关注"]
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="武汉"]
   find_type: XPATH
   operate_type: CLICK

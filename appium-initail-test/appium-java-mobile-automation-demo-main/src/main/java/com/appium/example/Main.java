@@ -255,35 +255,39 @@ public class Main {
 //                for (String str : newpartlist) { //增强型for循环，foreach循环 遍历updatedSubParts1集合并一一赋值给str
                 for(int j=0;j<newPartListAsList.size();j++)
                 {
-                    taskByApp.forEach(task -> { //这个地方固定了task是哪一个
-                    if(task.getTaskName().equals(newPartListAsList.get(j))){
-                        //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
-                    Step step = task.getSteps().get(0);
-                    MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
-                    try {
-                        main.execTask(task);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
-                        ;
-                        try {
-                            baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
+                    for(int k=0;k<taskByApp.size();k++)
+                    {
+                        Task  task = taskByApp.get(k);
+                  //  taskByApp.forEach(task -> { //这个地方固定了task是哪一个
+                        if (task.getTaskName().equals(newPartListAsList.get(j))) {
+                            //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
+                            Step step = task.getSteps().get(0);
+                            MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
+                            try {
+                                main.execTask(task);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            } finally {
+                                BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
+                                ;
+                                try {
+                                    baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
 //                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                    main.afterExec(mobileDriverService);
+                            main.afterExec(mobileDriverService);
 
-                }   //if的
-                    });  //task foreach
+                        }   //if的
+                    }
+                    //});  //task foreach
                }   //for的
 
 

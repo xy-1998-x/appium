@@ -133,9 +133,15 @@ public class Main {
                 .androidAppPackage(appName)
                 .build();
         driverService.initAppInfo(appInfo);
+
+        //启动appium
         AppiumDriverLocalService appiumService = driverService.startAppiumService();
+        //与appium服务器进行配置连接
         driverService.spinUpDriver(appiumService);
+
+        //getDriver返回的是androidDriver
         setDriver(driverService.getDriver());
+
         return driverService;
     }
 
@@ -222,19 +228,16 @@ public class Main {
                 if (ele.get("taskslist") != null) {
                     steplist.setTaskslist(ele.get("taskslist"));
                 }
-//                if (ele.get("index") != null) {
-//                    steplist.setIndex(Integer.parseInt((ele.get("index"))));
-//                }
-
             });
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        String appstr = steplist.getAppName();
 
+        String appstr = steplist.getAppName();
         String taskstr = steplist.getTaskslist();
         String[] parts = taskstr.split(",");
 
+        //不同的任务队列tasklist进行for循环
         for(int i=0;i < parts.length;i++) {
             String part = parts[i];
             String[] partlist = part.split("\\+");
@@ -244,64 +247,69 @@ public class Main {
                     .map(str -> str + ".yaml")
                     .collect(Collectors.toList());
 
-            String b = newPartListAsList.get(0);
-
         appList.forEach(app -> {
-            List<Task> taskByApp = allTask.getTask(app);
-          //  taskByApp.forEach(task -> { //这个地方固定了task是哪一个
-//                boolean found = Arrays.stream(updatedSubParts1).anyMatch(str -> task.getTaskName().equals(str));   //轮询判断啊
-//                if (found) {
+            if (app.equals(appstr)){
+                List<Task> taskByApp = allTask.getTask(app);
 
-//                for (String str : newpartlist) { //增强型for循环，foreach循环 遍历updatedSubParts1集合并一一赋值给str
-                for(int j=0;j<newPartListAsList.size();j++)
-                {
-                    for(int k=0;k<taskByApp.size();k++)
-                    {
-                        Task  task = taskByApp.get(k);
-                  //  taskByApp.forEach(task -> { //这个地方固定了task是哪一个
-                        if (task.getTaskName().equals(newPartListAsList.get(j))) {
-                            //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
-                            Step step = task.getSteps().get(0);
-                            MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());
+            //把task的列表i变成string的列表////////////////////////////////////////////
+            List<String> taskNames = new ArrayList<>();
+            for (Task task : taskByApp) {
+                String taskName = task.getTaskName();
+                if (taskName != null) {
+                    taskNames.add(taskName); //add将指定元素添加到列表末尾
+                }
+            }
+            ////////////////////////////////////////////////////////////////////////
+
+            MobileDriverService mobileDriverService = main.beforeExec(taskByApp.get(0).getSteps().get(0).getAppName(), taskByApp.get(0).getSteps().get(0).getActivityName());
+            //   MobileDriverService mobileDriverService = main.beforeExec("com.sup.android.superb","com.sup.android.base.MainActivity");///
+
+            //这个 for 循环是轮询执行解析出来的listtask中的task
+            for (int j = 0; j < newPartListAsList.size(); j++) {
+                //不同的去和tasks比
+                for (int k = 0; k < taskByApp.size(); k++) {
+                    Task task = taskByApp.get(k);
+                    //  taskByApp.forEach(task -> { //这个地方固定了task是哪一个
+                    //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
+
+                    //将在tasklist中取得的task与解析的进行比较
+                    if (task.getTaskName().equals(newPartListAsList.get(j))) {
+
+//                               Step step = task.getSteps().get(0);//get yaml文件的第一个stepp
+//                               MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());///
+
+                        try {
+                            main.execTask(task);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } finally {
+                            BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
+                            ;
                             try {
-                                main.execTask(task);
+                                baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
+//                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
-                            } finally {
-                                BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
-                                ;
-                                try {
-                                    baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
-//                        baseScreen.screenshot("C:\\Users\\86158\\Desktop\\", task.getAppName(), task.getTaskName());
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
                             }
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
+                        }
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
 
-                            main.afterExec(mobileDriverService);
+                        //   main.afterExec(mobileDriverService);
 
-                        }   //if的
-                    }
-                    //});  //task foreach
-               }   //for的
+                    }   //if的
+                }
 
+            }   //for的
+            main.afterExec(mobileDriverService);
+        }//if (app.equals(appstr)){
 
         });
-        }
+        }  //第一个for
 
-
-
-
-//                if(task.getTaskName().equals("测试.yaml"))
-//                {
-//                    System.out.println("ok'");
-//                }
-//                if(task.getTaskName().equals( "测试.yaml")) { //为什么没有执行   因为这个taskByApp列表不是个字符串 app可以是因为app是一个字符串列表
 
     }
 

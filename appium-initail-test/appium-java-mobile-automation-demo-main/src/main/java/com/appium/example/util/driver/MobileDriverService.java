@@ -8,6 +8,7 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import static com.appium.example.constant.DriverConstants.APPIUM_SERVER_IP;
 import static com.appium.example.constant.DriverConstants.APPIUM_SERVER_PORT;
 
+//声明一个接口
 public interface MobileDriverService {
     default AppiumDriverLocalService startAppiumService() {
         AppiumDriverLocalService appiumService = AppiumDriverLocalService.buildService(

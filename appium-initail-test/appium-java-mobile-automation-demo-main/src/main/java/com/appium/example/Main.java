@@ -64,18 +64,6 @@ public class Main {
                             step.setAppName(ele.get("app_name"));
                         }
 
-                        //解析yaml文件并保存为对应的字符串数组
-//                        if (ele.get("taskslist") != null) {
-//                            step.setTaskslist(ele.get("taskslist"));
-//                        }
-//                        String str = step.getTaskslist();
-//                        String[] parts = str.split("，");
-//                        String part1 = parts[0];
-//                        String part2 = parts[1];
-//                        String[] subParts1 = part1.split("\\+");    //得到了字符串数组1
-//                        String[] subParts2 = part2.split("\\+");    //得到了字符串数组2
-
-
                         if (ele.get("activity_name") != null) {
                             step.setActivityName(ele.get("activity_name"));
                         }
@@ -194,6 +182,9 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+
+        int index = 3;
+
         Main main = new Main();
         Path taskpath = Path.of("C:\\Users\\86158\\Desktop\\test\\测试.yaml");
 
@@ -201,13 +192,19 @@ public class Main {
 
         AllTask allTask = main.generateTask();
         List<String> appList = allTask.getAppList();
-        Step steplist = new Step();
+
+
+        Task taskyaml = new Task();
+
+        //解析yaml文件
+      //  Step steplist = new Step();  不要放外外面 因为如果放外面 没办法每次循环得时候初始化 导致不能list step
         try {
             Yaml yaml = new Yaml();
             InputStream inputStream = new FileInputStream(taskpath.toFile());
             ArrayList<HashMap<String, String>> arrayList = yaml.loadAs(inputStream, ArrayList.class);
-            arrayList.forEach(ele -> {
 
+            arrayList.forEach(ele -> {
+                Step steplist = new Step();     //这个放在里面就可以把step列出来 而如果放在外米娜就不行了 放里面 每次更新这个
                 if (ele.get("app_name") != null) {
                     steplist.setAppName(ele.get("app_name"));
                 }
@@ -216,13 +213,23 @@ public class Main {
                 if (ele.get("taskslist") != null) {
                     steplist.setTaskslist(ele.get("taskslist"));
                 }
+
+                // //每次循环都在更新同一个Step对象steplist，这意味着最终taskyaml.setSteps(steplist)设置的只是最后一个 “step” 的信息，而不是所有 “step” 的集合。
+                taskyaml.setSteps(steplist);
             });
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        String appstr = steplist.getAppName();
-        String taskstr = steplist.getTaskslist();
+
+
+        Step temp =  taskyaml.getSteps().get(index);
+
+        String appstr = temp.getAppName();
+        String taskstr = temp.getTaskslist();
+
+       // String appstr = steplist.getAppName();
+      //  String taskstr = steplist.getTaskslist();
         String[] parts = taskstr.split(",");
 
         appList.forEach(app -> {
@@ -239,12 +246,6 @@ public class Main {
             List<String> newPartListAsList = Arrays.stream(partlist)
                     .map(str -> str + ".yaml")
                     .collect(Collectors.toList());
-
-//            appList.forEach(app -> {
-//                if (app.equals(appstr)){
-//                    List<Task> taskByApp = allTask.getTask(app);
-//                    MobileDriverService mobileDriverService = main.beforeExec(taskByApp.get(0).getSteps().get(0).getAppName(), taskByApp.get(0).getSteps().get(0).getActivityName());
-//                    //   MobileDriverService mobileDriverService = main.beforeExec("com.sup.android.superb","com.sup.android.base.MainActivity");///
 
                     //这个 for 循环是轮询执行解析出来的listtask中的task
                     for (int j = 0; j < newPartListAsList.size(); j++) {
@@ -284,14 +285,12 @@ public class Main {
                 main.afterExec(mobileDriverService);
             }  finally {
                 if (i != parts.length-1) {
-                    System.out.println("还有任务执行完毕'");
+                    System.out.println("还有任务没有执行完毕'");
                 } else {
                     System.out.println("app任务队列全部执行完毕'");
                 }
 
             }
-
-
 
         }  //第一个for
     }//if (app.equals(appstr)){

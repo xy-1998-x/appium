@@ -6,3 +6,7 @@
   element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="武汉"]
   find_type: XPATH
   operate_type: CLICK
+-
+  element_info: //android.widget.TextView[@resource-id="com.sup.android.superb:id/rz" and @text="关注"]
+  find_type: XPATH
+  operate_type: CLICK

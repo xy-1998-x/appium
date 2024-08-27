@@ -14,5 +14,5 @@ public class Step {
     private String inputText;
     private String numsinfo;
     private String taskslist;
-    private int index;
+    private String index;
 }

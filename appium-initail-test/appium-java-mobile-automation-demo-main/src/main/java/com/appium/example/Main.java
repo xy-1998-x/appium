@@ -160,13 +160,7 @@ public class Main {
             }
             switch (step.getOperateType()) {
                 ///*********
-                case SCROLLTOTEXT -> {
-                    try {
-                        baseScreen.findtext("");
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                case SCROLLTOTEXT -> baseScreen.scrollToElement("");
                 case DOUBLECLICK -> baseScreen.doubleclick(elementInfo);
                 case CLICK -> baseScreen.tap(elementInfo);
                 case INPUT -> baseScreen.inputText(elementInfo, step.getInputText());
@@ -231,36 +225,35 @@ public class Main {
         String taskstr = steplist.getTaskslist();
         String[] parts = taskstr.split(",");
 
-        //不同的任务队列tasklist进行for循环
+        appList.forEach(app -> {
+            if (app.equals(appstr)){
+
+                //不同的任务队列tasklist进行for循环
         for(int i=0;i < parts.length;i++) {
+            List<Task> taskByApp = allTask.getTask(app);
+            MobileDriverService mobileDriverService = main.beforeExec(taskByApp.get(0).getSteps().get(0).getAppName(), taskByApp.get(0).getSteps().get(0).getActivityName());
+
             String part = parts[i];
             String[] partlist = part.split("\\+");
-
             //把他变成一个链表  .map操作后的 Stream（其中的字符串都加上了.yaml后缀）收集到一个新的List<String>中。
             List<String> newPartListAsList = Arrays.stream(partlist)
                     .map(str -> str + ".yaml")
                     .collect(Collectors.toList());
 
-            appList.forEach(app -> {
-                if (app.equals(appstr)){
-                    List<Task> taskByApp = allTask.getTask(app);
-
-                    MobileDriverService mobileDriverService = main.beforeExec(taskByApp.get(0).getSteps().get(0).getAppName(), taskByApp.get(0).getSteps().get(0).getActivityName());
-                    //   MobileDriverService mobileDriverService = main.beforeExec("com.sup.android.superb","com.sup.android.base.MainActivity");///
+//            appList.forEach(app -> {
+//                if (app.equals(appstr)){
+//                    List<Task> taskByApp = allTask.getTask(app);
+//                    MobileDriverService mobileDriverService = main.beforeExec(taskByApp.get(0).getSteps().get(0).getAppName(), taskByApp.get(0).getSteps().get(0).getActivityName());
+//                    //   MobileDriverService mobileDriverService = main.beforeExec("com.sup.android.superb","com.sup.android.base.MainActivity");///
 
                     //这个 for 循环是轮询执行解析出来的listtask中的task
                     for (int j = 0; j < newPartListAsList.size(); j++) {
                         //不同的去和tasks比
                         for (int k = 0; k < taskByApp.size(); k++) {
                             Task task = taskByApp.get(k);
-                            //  taskByApp.forEach(task -> { //这个地方固定了task是哪一个
-                            //这个执行过程不是根据字符串数组的顺序来的 而是根据tasks中的任务顺序来的
 
                             //将在tasklist中取得的task与解析的进行比较
                             if (task.getTaskName().equals(newPartListAsList.get(j))) {
-
-//                               Step step = task.getSteps().get(0);//get yaml文件的第一个stepp
-//                               MobileDriverService mobileDriverService = main.beforeExec(step.getAppName(), step.getActivityName());///
 
                                 try {
                                     main.execTask(task);
@@ -268,11 +261,10 @@ public class Main {
                                     throw new RuntimeException(e);
                                 } finally {
                                     BaseScreen baseScreen = new BaseScreen(MobileDriverHolder.getDriver());
-                                    ;
                                     try {
 
                                         baseScreen.screenshot(yourpath, task.getAppName(), task.getTaskName());
-                                        
+
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -283,18 +275,27 @@ public class Main {
                                     throw new RuntimeException(e);
                                 }
 
-                                //   main.afterExec(mobileDriverService);
-
                             }   //if的
                         }
 
                     }   //for的
-                    main.afterExec(mobileDriverService);
-                }//if (app.equals(appstr)){
 
-            });
+            try {
+                main.afterExec(mobileDriverService);
+            }  finally {
+                if (i != parts.length-1) {
+                    System.out.println("还有任务执行完毕'");
+                } else {
+                    System.out.println("app任务队列全部执行完毕'");
+                }
+
+            }
+
+
+
         }  //第一个for
-
+    }//if (app.equals(appstr)){
+});
 
     }
 
